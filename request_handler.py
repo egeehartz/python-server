@@ -1,5 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from locations.request import get_all_locations, get_single_location
+from customers import get_all_customers, get_single_customer
+from employees import get_all_employees, get_single_employee
+from locations import get_all_locations, get_single_location
 from animals import get_all_animals, get_single_animal
 
 
@@ -53,6 +55,20 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             else:
                 response = f"{get_all_locations()}"
+        
+        if resource == "employees":
+            if id is not None:
+                response = f"{get_single_employee(id)}"
+
+            else:
+                response = f"{get_all_employees()}"
+        
+        if resource == "customers":
+            if id is not None:
+                response = f"{get_single_customer(id)}"
+
+            else:
+                response = f"{get_all_customers()}"
 
         self.wfile.write(response.encode())
 
@@ -81,3 +97,7 @@ def main():
     host = ''
     port = 8088
     HTTPServer((host, port), HandleRequests).serve_forever()
+
+
+if __name__ == "__main__":
+    main()
