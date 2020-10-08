@@ -1,4 +1,2 @@
-/locations/__pycache__
-/employees/__pycache__
-/customers/__pycache__
-/animals/__pycache__
+__pycache__
+*.pyc
