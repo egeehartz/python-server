@@ -15,8 +15,7 @@ CUSTOMERS = [
       "address": "7046 Chestnut Ct"
     },
     {
-      "email": "emily@emily.com",
-      "password": "123",
+      "address": "emily@emily.com",
       "name": "Emily H",
       "id": 4
     }
