@@ -101,6 +101,33 @@ def get_single_animal(id):
 
         return json.dumps(animal.__dict__)
 
+def get_animal_by_location(value):
+
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        select
+            a.id,
+            a.name,
+            a.breed,
+            a.status,
+            a.customer_id,
+            a.location_id
+        FROM animal a
+        WHERE a.location_id = ?
+        """, ( value, ))
+
+        data = db_cursor.fetchone()
+
+        # Create an customer instance from the current row
+        animal = Animal(data['id'], data['name'], data['breed'], data['status'],
+                            data['customer_id'], data['location_id'])
+
+        # Return the JSON serialized Customer object
+        return json.dumps(animal.__dict__)
+
 def create_animal(animal):
     # Get the id value of the last animal in the list
     max_id = ANIMALS[-1]["id"]
