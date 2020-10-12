@@ -101,7 +101,7 @@ def get_single_animal(id):
 
         return json.dumps(animal.__dict__)
 
-def get_animal_by_location(value):
+def get_animals_by_location(value):
 
     with sqlite3.connect("./kennel.db") as conn:
         conn.row_factory = sqlite3.Row
@@ -117,6 +117,38 @@ def get_animal_by_location(value):
             a.location_id
         FROM animal a
         WHERE a.location_id = ?
+        """, ( value, ))
+
+        # Initialize an empty list to hold all animal representations
+        animals = []
+
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+        # Create an customer instance from the current row
+            animal = Animal(row['id'], row['name'], row['breed'], row['status'],
+                                row['location_id'], row['customer_id'])
+            animals.append(animal.__dict__)
+
+        # Return the JSON serialized Customer object
+        return json.dumps(animals)
+
+def get_animals_by_status(value):
+
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        select
+            a.id,
+            a.name,
+            a.breed,
+            a.status,
+            a.customer_id,
+            a.location_id
+        FROM animal a
+        WHERE a.status = ?
         """, ( value, ))
 
         # Initialize an empty list to hold all animal representations
