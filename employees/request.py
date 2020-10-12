@@ -40,7 +40,7 @@ def get_all_employees():
         FROM employee e
         """)
 
-        # Initialize an empty list to hold all animal representations
+        # Initialize an empty list to hold all employee representations
         employees = []
 
         # Convert rows of data into a Python list
@@ -49,10 +49,10 @@ def get_all_employees():
         # Iterate list of data returned from database
         for row in dataset:
 
-            # Create an animal instance from the current row.
+            # Create an employee instance from the current row.
             # Note that the database fields are specified in
             # exact order of the parameters defined in the
-            # Animal class above.
+            # employee class above.
             employee = Employee(row['id'], row['name'], row['address'],
                              row['location_id'])
 
@@ -82,11 +82,41 @@ def get_single_employee(id):
         # Load the single result into memory
         data = db_cursor.fetchone()
 
-        # Create an animal instance from the current row
+        # Create an employee instance from the current row
         employee = Employee(data['id'], data['name'], data['address'],
                         data['location_id'])
 
         return json.dumps(employee.__dict__)
+
+def get_employee_by_location(value):
+
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        select
+            e.id,
+            e.name,
+            e.address,
+            e.location_id
+        FROM employee e
+        WHERE e.location_id = ?
+        """, ( value, ))
+
+        # Initialize an empty list to hold all employee representations
+        employees = []
+
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+        # Create an customer instance from the current row
+            employee = Employee(row['id'], row['name'], row['address'],
+                                row['location_id'])
+            employees.append(employee.__dict__)
+
+        # Return the JSON serialized Customer object
+        return json.dumps(employees)
 
 def create_employee(employee):
     # Get the id value of the last employee in the list

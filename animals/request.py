@@ -119,14 +119,19 @@ def get_animal_by_location(value):
         WHERE a.location_id = ?
         """, ( value, ))
 
-        data = db_cursor.fetchone()
+        # Initialize an empty list to hold all animal representations
+        animals = []
 
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
         # Create an customer instance from the current row
-        animal = Animal(data['id'], data['name'], data['breed'], data['status'],
-                            data['customer_id'], data['location_id'])
+            animal = Animal(row['id'], row['name'], row['breed'], row['status'],
+                                row['location_id'], row['customer_id'])
+            animals.append(animal.__dict__)
 
         # Return the JSON serialized Customer object
-        return json.dumps(animal.__dict__)
+        return json.dumps(animals)
 
 def create_animal(animal):
     # Get the id value of the last animal in the list

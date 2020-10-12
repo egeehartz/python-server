@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from customers import get_all_customers, get_single_customer, delete_customer, update_customer, get_customer_by_email
-from employees import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
+from employees import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee, get_employee_by_location
 from locations import get_all_locations, get_single_location, create_location, delete_location, update_location
 from animals import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal, get_animal_by_location
 
@@ -15,12 +15,13 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Check if there is a query string parameter
         if "?" in resource:
             # GIVEN: /customers?email=jenna@solis.com
+            # GIVEN: /animals?location_id=1
 
-            param = resource.split("?")[1]  # email=jenna@solis.com
-            resource = resource.split("?")[0]  # 'customers'
-            pair = param.split("=")  # [ 'email', 'jenna@solis.com' ]
-            key = pair[0]  # 'email'
-            value = pair[1]  # 'jenna@solis.com'
+            param = resource.split("?")[1]  # email=jenna@solis.com, location_id=1
+            resource = resource.split("?")[0]  # 'customers', 'animals'
+            pair = param.split("=")  # [ 'email', 'jenna@solis.com' ] ['location_id', '1']
+            key = pair[0]  # 'email' "location_id"
+            value = pair[1]  # 'jenna@solis.com' "1"
 
             return ( resource, key, value )
 
@@ -93,7 +94,9 @@ class HandleRequests(BaseHTTPRequestHandler):
             if key == "email" and resource == "customers":
                 response = get_customer_by_email(value)
             elif key == "location_id" and resource == "animals":
-                response = get_animal_by_location(value)
+                response = get_animal_by_location(int(value))
+            elif key == "location_id" and resource == "employees":
+                response = get_employee_by_location(value)
 
         self.wfile.write(response.encode())
 
