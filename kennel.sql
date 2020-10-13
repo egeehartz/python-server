@@ -60,5 +60,5 @@ INSERT INTO `Animal` VALUES (null, "Daps", "Kennel", "Boxer", 2, 2);
 
 SELECT * FROM Location;
 SELECT * FROM Customer;
-
-DELETE 
+SELECT * FROM Employee;
+SELECT * FROM Animal;
