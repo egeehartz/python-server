@@ -190,6 +190,13 @@ def delete_animal(id):
         WHERE id = ?
         """, (id, ))
 
+        rows_affected = db_cursor.rowcount
+    
+        if rows_affected == 0:
+            return False
+        else:
+            return True
+
 def update_animal(id, new_animal):
     # Iterate the ANIMALS list, but use enumerate() so that
     # you can access the index value of each item.
