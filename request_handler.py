@@ -44,6 +44,13 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
+    
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+        self.send_header('Access-Control-Allow-Headers', '*')
+        self.end_headers()
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
@@ -146,12 +153,12 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "animals":
             update_animal(id, post_body)
-        if resource == "locations":
-            update_location(id, post_body)
-        if resource == "employees":
-            update_employee(id, post_body)
-        if resource == "customers":
-            update_customer(id, post_body)
+        # if resource == "locations":
+        #     update_location(id, post_body)
+        # if resource == "employees":
+        #     update_employee(id, post_body)
+        # if resource == "customers":
+        #     update_customer(id, post_body)
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
@@ -165,13 +172,19 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         # Delete a single animal from the list
         if resource == "animals":
-            delete_animal(id)
+            success = delete_animal(id)
+            if success:
+                self._set_headers(204)
+            else:
+                self._set_headers(404)
+            
         if resource == "locations":
             delete_location(id)
         if resource == "employees":
             delete_employee(id)
         if resource == "customers":
             delete_customer(id)
+
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
