@@ -49,7 +49,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+        self.send_header('Access-Control-Allow-Headers', '*')
         self.end_headers()
 
     # Here's a method on the class that overrides the parent's method.
@@ -153,12 +153,12 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "animals":
             update_animal(id, post_body)
-        if resource == "locations":
-            update_location(id, post_body)
-        if resource == "employees":
-            update_employee(id, post_body)
-        if resource == "customers":
-            update_customer(id, post_body)
+        # if resource == "locations":
+        #     update_location(id, post_body)
+        # if resource == "employees":
+        #     update_employee(id, post_body)
+        # if resource == "customers":
+        #     update_customer(id, post_body)
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
