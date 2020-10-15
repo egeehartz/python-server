@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Employee
+from models import Employee, Location
 
 EMPLOYEES = [
     {
@@ -36,8 +36,12 @@ def get_all_employees():
             e.id,
             e.name,
             e.address,
-            e.location_id
+            e.location_id,
+            l.name location_name,
+            l.address location_address
         FROM employee e
+        JOIN Location l
+            ON l.id = e.location_id
         """)
 
         # Initialize an empty list to hold all employee representations
@@ -55,7 +59,12 @@ def get_all_employees():
             # employee class above.
             employee = Employee(row['id'], row['name'], row['address'],
                              row['location_id'])
+            
+            # Create a Location instance from the current row
+            location = Location(row['location_id'],row['location_name'], row['location_address'])
 
+            # Add the dictionary representation of the location to the animal
+            employee.location = location.__dict__
             employees.append(employee.__dict__)
 
     # Use `json` package to properly serialize list as JSON
