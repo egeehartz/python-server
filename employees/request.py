@@ -127,36 +127,46 @@ def get_employee_by_location(value):
         # Return the JSON serialized Customer object
         return json.dumps(employees)
 
-def create_employee(employee):
-    # Get the id value of the last employee in the list
-    max_id = EMPLOYEES[-1]["id"]
+def create_employee(new_employee):
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
 
-    # Add 1 to whatever that number is
-    new_id = max_id + 1
+        db_cursor.execute("""
+        INSERT INTO Employee
+            ( name, location_id, address )
+        VALUES
+            ( ?, ?, ?);
+        """, (new_employee['name'], new_employee['location_id'],
+              new_employee['address'], ))
 
-    # Add an `id` property to the employee dictionary
-    employee["id"] = new_id
+        # The `lastrowid` property on the cursor will return
+        # the primary key of the last thing that got added to
+        # the database.
+        id = db_cursor.lastrowid
 
-    # Add the employee dictionary to the list
-    EMPLOYEES.append(employee)
+        # Add the `id` property to the animal dictionary that
+        # was sent by the client so that the client sees the
+        # primary key in the response.
+        new_employee['id'] = id
 
-    # Return the dictionary with `id` property added
-    return employee
+
+    return json.dumps(new_employee)
 
 def delete_employee(id):
-    # Initial -1 value for employeeindex, in case one isn't found
-    employee_index = -1
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
 
-    # Iterate the EMPLOYEES list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, employee in enumerate(EMPLOYEES):
-        if employee["id"] == id:
-            # Found the employee. Store the current index.
-            employee_index = index
+        db_cursor.execute("""
+        DELETE FROM employee
+        WHERE id = ?
+        """, (id, ))
 
-    # If the employeewas found, use pop(int) to remove it from list
-    if employee_index >= 0:
-        EMPLOYEES.pop(employee_index)
+        rows_affected = db_cursor.rowcount
+    
+        if rows_affected == 0:
+            return False
+        else:
+            return True
 
 def update_employee(id, new_employee):
     # Iterate the employeeS list, but use enumerate() so that
